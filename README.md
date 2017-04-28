@@ -1,4 +1,4 @@
-#Sum it up
+# Sum it up
 
 A petite "spreadsheet" addition app for those who believe in the superiority of the sum. 
 
