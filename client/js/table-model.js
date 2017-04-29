@@ -9,7 +9,7 @@ class TableModel {
   }
 
   getValue(location){
-    return this.data[this._getCellId(location)] = value;
+    return this.data[this._getCellId(location)];
   }
 
   setValue(location, value){
