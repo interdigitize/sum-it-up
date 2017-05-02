@@ -92,6 +92,7 @@ class TableView {
     this.headerRowEl = document.querySelector('THEAD TR');
     this.sheetBodyEl = document.querySelector('TBODY')
     this.formulaBarEl = document.querySelector('#formula-bar');
+    this.sumRowEl = document.querySelector('.sum-row'); // defined here
   }
 
   initCurrentCell() {
@@ -112,6 +113,7 @@ class TableView {
   renderTable(){
     this.renderTableHeader();
     this.renderTableBody();
+    this.renderSumRow();
   }
 
   renderTableHeader(){
@@ -134,10 +136,10 @@ class TableView {
         const position = {col: col, row: row};
         const value = this.model.getValue(position);
         const td = createTD(value);
-
         if(this.isCurrentCell(col, row)){
           td.className = 'current-cell';
         }
+
         tr.appendChild(td);
       }
       fragment.appendChild(tr);
@@ -145,6 +147,18 @@ class TableView {
 
     removeChildren(this.sheetBodyEl);
     this.sheetBodyEl.appendChild(fragment);
+  }
+
+  renderSumRow(){
+    const tr = createTR();
+    for(let col = 0; col < this.model.numCols; col++){
+      const position = {col: col};
+      const value = this.model.getValue(position);
+      const td = createTD(value);
+      tr.appendChild(td);
+      td.className = 'sum-row';
+    }
+    this.sheetBodyEl.appendChild(tr); // If I change this to this.sumRowEl.appendChild(tr); It logs nul in the console. Why is that? Since it is defined on 20.
   }
 
   attachEventHandlers(){
@@ -163,6 +177,7 @@ class TableView {
     const row = evt.target.parentElement.rowIndex - 1;
     this.currentCellLocation = { col: col, row: row};
     this.renderTableBody();
+    this.renderSumRow();
     this.renderFormulaBar();
   }
 }
