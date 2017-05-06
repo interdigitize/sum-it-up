@@ -180,12 +180,10 @@ class TableView {
     this.sumRowEl.col = this.currentCellLocation.col;
     let sumRowCellValue = this.model.getValue(this.sumRowEl);
     let value = parseInt(this.formulaBarEl.value, 10);
-    console.log("sumRowCellValue ", sumRowCellValue);
 
     if(sumRowCellValue === undefined){
       if(typeof(value) === 'number' && !isNaN(value)){
         this.model.setValue(this.sumRowEl, value);
-        console.log("true value ", value);
       }else if(isNaN(value)){
         sumRowCellValue = undefined;
         this.model.setValue(this.sumRowEl, sumRowCellValue);
