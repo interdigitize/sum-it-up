@@ -112,6 +112,7 @@ class TableView {
   renderTable(){
     this.renderTableHeader();
     this.renderTableBody();
+    this.renderSumRow();
   }
 
   renderTableHeader(){
@@ -134,10 +135,10 @@ class TableView {
         const position = {col: col, row: row};
         const value = this.model.getValue(position);
         const td = createTD(value);
-
         if(this.isCurrentCell(col, row)){
           td.className = 'current-cell';
         }
+
         tr.appendChild(td);
       }
       fragment.appendChild(tr);
@@ -147,8 +148,24 @@ class TableView {
     this.sheetBodyEl.appendChild(fragment);
   }
 
+  renderSumRow(){
+    const tr = createTR();
+    for(let col = 0; col < this.model.numCols; col++){
+      const position = {col: col};
+      const value = this.model.getValue(position);
+      const td = createTD(value);
+      tr.appendChild(td);
+      td.className = 'sum-row';
+    }
+    this.sheetBodyEl.appendChild(tr);
+
+    this.sumRowEl = document.querySelectorAll('.sum-row');
+
+  }
+
   attachEventHandlers(){
     this.sheetBodyEl.addEventListener('click', this.handleSheetClick.bind(this));
+    this.formulaBarEl.addEventListener('keyup', this.handleSumColumnUpdate.bind(this));
     this.formulaBarEl.addEventListener('keyup', this.handleFormulaBarChange.bind(this));
   }
 
@@ -156,6 +173,30 @@ class TableView {
     const value = this.formulaBarEl.value;
     this.model.setValue(this.currentCellLocation, value);
     this.renderTableBody();
+    this.renderSumRow();
+  }
+
+  handleSumColumnUpdate(evt){
+    this.sumRowEl.col = this.currentCellLocation.col;
+    let sumRowCellValue = this.model.getValue(this.sumRowEl);
+    let value = parseInt(this.formulaBarEl.value, 10);
+
+    if(sumRowCellValue === undefined){
+      if(typeof(value) === 'number' && !isNaN(value)){
+        this.model.setValue(this.sumRowEl, value);
+      }else if(isNaN(value)){
+        sumRowCellValue = undefined;
+        this.model.setValue(this.sumRowEl, sumRowCellValue);
+      }
+    } else {
+      if(isNaN(value)){
+        sumRowCellValue = parseInt(sumRowCellValue, 10);
+        this.model.setValue(this.sumRowEl, sumRowCellValue);
+      }else{
+        sumRowCellValue = parseInt(sumRowCellValue, 10) + parseInt(this.formulaBarEl.value, 10);
+        this.model.setValue(this.sumRowEl, sumRowCellValue);
+      }
+    }
   }
 
   handleSheetClick(evt){
@@ -163,6 +204,7 @@ class TableView {
     const row = evt.target.parentElement.rowIndex - 1;
     this.currentCellLocation = { col: col, row: row};
     this.renderTableBody();
+    this.renderSumRow();
     this.renderFormulaBar();
   }
 }

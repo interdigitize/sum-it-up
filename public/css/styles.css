@@ -4,11 +4,20 @@ table{
 
 th,
 td{
-  border: 1px solid black;
+  border: 1px solid #bbbbbb;
   min-width: 100px;
   padding: 3px;
+  height: 20px;
+}
+
+th{
+  background-color: gainsboro;
 }
 
 .current-cell {
   background-color: lightcyan;
+}
+
+.sum-row {
+  background-color: powderblue;
 }
