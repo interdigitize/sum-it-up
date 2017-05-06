@@ -76,6 +76,13 @@ describe('table-view', () => {
       const trs = document.querySelectorAll('TBODY TR');
       expect(trs[1].cells[2].textContent).toBe('123');
     });
+    /* this is where I should write tests to check that the column-value summing function works:
+      - when numbers are entered
+      - when a string is entered then numbers are entered
+      - when a number is entered, then a string, then another number
+
+      I get it in theory, but implementing it on my own is still fuzzy.
+    */
   });
   describe('table header', () => {
     it('has valid column header labels', () => {
@@ -92,5 +99,4 @@ describe('table-view', () => {
       expect(labelTexts).toEqual(['A', 'B', 'C', 'D', 'E', 'F']);
     });
   });
-
 });
