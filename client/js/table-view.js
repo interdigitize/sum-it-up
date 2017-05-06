@@ -1,9 +1,6 @@
 const { getLetterRange } = require('./array-util');
 const { removeChildren, createTR, createTH, createTD } = require('./dom-util');
 
-
-
-
 class TableView {
   constructor(model) {
     this.model = model;
@@ -20,7 +17,7 @@ class TableView {
     this.headerRowEl = document.querySelector('THEAD TR');
     this.sheetBodyEl = document.querySelector('TBODY')
     this.formulaBarEl = document.querySelector('#formula-bar');
-    this.sumRowEl = document.querySelector('.sum-row'); // defined here (see line 99)
+    this.sumRowEl = document.querySelector('.sum-row'); // defined here
   }
 
   initCurrentCell() {
@@ -56,33 +53,21 @@ class TableView {
            this.currentCellLocation.row === row;
   }
 
-  createColArrays(cellPosition, value, obj){
-    obj[cellPosition] = [];
-    console.log('value: ', value);
-    obj[cellPosition].push(value); //Why is this adding a key Value pair and not just the value?
-    return obj;
-  }
-
-
   renderTableBody(){
     const fragment = document.createDocumentFragment();
-    const emptyObj = {};
     for(let row = 0; row < this.model.numRows; row++){
       const tr = createTR();
       for(let col = 0; col < this.model.numCols; col++){
         const position = {col: col, row: row};
         const value = this.model.getValue(position);
-        const ObjofColValues = this.createColArrays(position.col, value, emptyObj);
         const td = createTD(value);
         if(this.isCurrentCell(col, row)){
           td.className = 'current-cell';
         }
-        tr.appendChild(td);
-        console.log(ObjofColValues);
 
+        tr.appendChild(td);
       }
       fragment.appendChild(tr);
-
     }
 
     removeChildren(this.sheetBodyEl);
@@ -98,10 +83,8 @@ class TableView {
       tr.appendChild(td);
       td.className = 'sum-row';
     }
-    this.sheetBodyEl.appendChild(tr); // If I change this to this.sumRowEl.appendChild(tr); It logs null in the console. Why is that? Since it is defined on 20.
+    this.sheetBodyEl.appendChild(tr); // If I change this to this.sumRowEl.appendChild(tr); It logs nul in the console. Why is that? Since it is defined on 20.
   }
-
-
 
   attachEventHandlers(){
     this.sheetBodyEl.addEventListener('click', this.handleSheetClick.bind(this));
@@ -112,7 +95,6 @@ class TableView {
     const value = this.formulaBarEl.value;
     this.model.setValue(this.currentCellLocation, value);
     this.renderTableBody();
-    this.renderSumRow();
   }
 
   handleSheetClick(evt){
