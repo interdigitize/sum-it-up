@@ -12,3 +12,7 @@ td{
 .current-cell {
   background-color: lightcyan;
 }
+
+.sum-row {
+  background-color: yellow;
+}

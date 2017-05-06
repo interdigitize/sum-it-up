@@ -17,7 +17,6 @@ class TableView {
     this.headerRowEl = document.querySelector('THEAD TR');
     this.sheetBodyEl = document.querySelector('TBODY')
     this.formulaBarEl = document.querySelector('#formula-bar');
-    this.sumRowEl = document.querySelector('.sum-row'); // defined here
   }
 
   initCurrentCell() {
@@ -83,11 +82,15 @@ class TableView {
       tr.appendChild(td);
       td.className = 'sum-row';
     }
-    this.sheetBodyEl.appendChild(tr); // If I change this to this.sumRowEl.appendChild(tr); It logs nul in the console. Why is that? Since it is defined on 20.
+    this.sheetBodyEl.appendChild(tr);
+
+    this.sumRowEl = document.querySelectorAll('.sum-row');
+
   }
 
   attachEventHandlers(){
     this.sheetBodyEl.addEventListener('click', this.handleSheetClick.bind(this));
+    this.formulaBarEl.addEventListener('keyup', this.handleSumColumnUpdate.bind(this));
     this.formulaBarEl.addEventListener('keyup', this.handleFormulaBarChange.bind(this));
   }
 
@@ -95,6 +98,32 @@ class TableView {
     const value = this.formulaBarEl.value;
     this.model.setValue(this.currentCellLocation, value);
     this.renderTableBody();
+    this.renderSumRow();
+  }
+
+  handleSumColumnUpdate(evt){
+    this.sumRowEl.col = this.currentCellLocation.col;
+    let sumRowCellValue = this.model.getValue(this.sumRowEl);
+    let value = parseInt(this.formulaBarEl.value, 10);
+    console.log("sumRowCellValue ", sumRowCellValue);
+
+    if(sumRowCellValue === undefined){
+      if(typeof(value) === 'number' && !isNaN(value)){
+        this.model.setValue(this.sumRowEl, value);
+        console.log("true value ", value);
+      }else if(isNaN(value)){
+        sumRowCellValue = undefined;
+        this.model.setValue(this.sumRowEl, sumRowCellValue);
+      }
+    } else {
+      if(isNaN(value)){
+        sumRowCellValue = parseInt(sumRowCellValue, 10);
+        this.model.setValue(this.sumRowEl, sumRowCellValue);
+      }else{
+        sumRowCellValue = parseInt(sumRowCellValue, 10) + parseInt(this.formulaBarEl.value, 10);
+        this.model.setValue(this.sumRowEl, sumRowCellValue);
+      }
+    }
   }
 
   handleSheetClick(evt){
